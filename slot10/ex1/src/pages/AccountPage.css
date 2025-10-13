@@ -1,0 +1,160 @@
+.account-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+.account-card {
+  border: none;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.account-card .card-header {
+  background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+  color: white;
+  padding: 2rem;
+  border-bottom: none;
+}
+
+.account-card .card-body {
+  padding: 2rem;
+  background: #f8f9fa;
+}
+
+.tab-link {
+  border-radius: 25px !important;
+  margin: 0 0.5rem;
+  padding: 0.75rem 1.5rem !important;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.tab-link:hover {
+  background-color: rgba(102, 126, 234, 0.1) !important;
+  transform: translateY(-2px);
+}
+
+.tab-link.active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  color: white !important;
+  border: none !important;
+}
+
+.tab-icon {
+  font-size: 1.2rem;
+}
+
+.form-content {
+  background: white;
+  padding: 2rem;
+  border-radius: 15px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  min-height: 400px;
+}
+
+.form-label {
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 0.5rem;
+}
+
+.form-control,
+.form-select {
+  border-radius: 10px;
+  border: 2px solid #e9ecef;
+  padding: 0.75rem;
+  transition: all 0.3s ease;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+.form-control.is-invalid,
+.form-select.is-invalid {
+  border-color: #dc3545;
+  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+
+.invalid-feedback {
+  font-weight: 500;
+  margin-top: 0.5rem;
+  color: #dc3545;
+  font-size: 0.875rem;
+}
+
+.was-validated .form-control:invalid,
+.was-validated .form-select:invalid {
+  border-color: #dc3545;
+}
+
+.alert-success {
+  background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+  border: none;
+  border-radius: 15px;
+  color: #155724;
+  font-weight: 600;
+}
+
+.input-group-text {
+  background: white;
+  border: 2px solid #e9ecef;
+  border-right: none;
+  border-radius: 10px 0 0 10px;
+}
+
+.input-group .form-control {
+  border-left: none;
+  border-radius: 0 10px 10px 0;
+}
+
+.btn {
+  border-radius: 25px;
+  padding: 0.75rem 2rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+}
+
+.progress {
+  height: 10px;
+  border-radius: 10px;
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.progress-bar {
+  border-radius: 10px;
+  background: linear-gradient(135deg, #f39c12 0%, #e74c3c 100%);
+}
+
+.text-danger {
+  color: #e74c3c !important;
+}
+
+@media (max-width: 768px) {
+  .account-page {
+    padding: 1rem;
+  }
+  
+  .account-card .card-header,
+  .account-card .card-body,
+  .form-content {
+    padding: 1.5rem;
+  }
+  
+  .tab-link {
+    margin: 0.25rem;
+    padding: 0.5rem 1rem !important;
+    font-size: 0.9rem;
+  }
+}
