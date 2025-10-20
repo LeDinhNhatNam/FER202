@@ -2,6 +2,8 @@ import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import CounterComponent from './components/CounterComponent';
 import ToggleComponent from './components/ToggleComponent';
+import LoginForm from './components/LoginForm';
+import SignUpForm from './components/SignUpForm';
 import QuestionBank from './components/QuestionBank';
 
 function App() {
@@ -11,6 +13,10 @@ function App() {
       <CounterComponent />
       <hr />
       <ToggleComponent />
+      <hr />
+      <LoginForm />
+      <hr />
+      <SignUpForm />
       <hr />
       <QuestionBank />
     </div>
