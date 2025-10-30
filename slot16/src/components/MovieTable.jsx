@@ -1,162 +1,110 @@
 import React from 'react';
-import { Table, Button, Image, Modal, Alert, Spinner, Badge } from 'react-bootstrap';
-import { useMovieState, useMovieDispatch } from '../contexts/MovieContext';
+import { Table, Button, Image, Badge, Alert, Spinner, ButtonGroup } from 'react-bootstrap';
 import { useAuth } from '../contexts/AuthContext';
 
-const MovieTable = () => {
+const MovieTable = ({ movies, genres, loading, onEdit, onDelete }) => {
   const { user } = useAuth();
-  const state = useMovieState();
-  const { dispatch, confirmDelete } = useMovieDispatch(); 
-  
-  const { movies, genres, loading, movieToDelete, showDeleteModal } = state;
 
-  // Chỉ admin mới được xóa phim, admin và manager được sửa
-  const canEdit = user?.role === 'admin' || user?.role === 'manager';
-  const canDelete = user?.role === 'admin';
+  const getGenreName = (genreId) => {
+    const genre = genres.find(g => g.id === genreId);
+    return genre ? genre.genreName : 'Không xác định';
+  };
 
-  // Tạo genre map từ dữ liệu API
-  const genreMap = genres.reduce((map, genre) => {
-    map[genre.id] = genre.name;
-    return map;
-  }, {});
-
-  // Hàm để lấy màu badge theo danh mục
   const getCategoryBadgeVariant = (genreName) => {
-    const categoryColors = {
-      'Sci-Fi': 'primary',
-      'Comedy': 'warning',
-      'Drama': 'info', 
+    const variants = {
+      'Action': 'danger',
+      'Comedy': 'warning', 
+      'Drama': 'info',
       'Horror': 'dark',
-      'Romance': 'danger',
-      'Action': 'success',
+      'Romance': 'success',
+      'Sci-Fi': 'primary',
       'Thriller': 'secondary'
     };
-    return categoryColors[genreName] || 'secondary';
+    return variants[genreName] || 'secondary';
   };
 
-  const handleEditClick = (movie) => {
-      dispatch({ type: 'OPEN_EDIT_MODAL', payload: movie });
-  };
-  
-  const handleDeleteClick = (movie) => {
-      dispatch({ type: 'OPEN_DELETE_MODAL', payload: movie });
-  };
+  if (loading && movies.length === 0) {
+    return (
+      <div className="text-center my-4">
+        <Spinner animation="border" role="status" variant="primary" className="me-2" />
+        <Alert variant="info" className="mt-3">Đang tải dữ liệu phim...</Alert>
+      </div>
+    );
+  }
 
   return (
-    <>
-      {loading && movies.length === 0 ? (
-          <div className="text-center my-4">
-              <Spinner animation="border" role="status" variant="primary" className="me-2" />
-              <Alert variant="info" className="mt-3">Đang tải dữ liệu phim...</Alert>
-          </div>
-      ) : (
-        <Table striped bordered hover responsive className="mt-4">
-          <thead>
-            <tr>
-              <th>Avatar</th>
-              <th>ID</th>
-              <th>Tên Phim</th>
-              <th>Danh mục</th>
-              <th>Thời lượng</th>
-              <th>Năm</th>
-              <th>Quốc gia</th>
-              <th>Thao tác</th>
+    <Table striped bordered hover responsive className="mt-4">
+      <thead>
+        <tr>
+          <th>Poster</th>
+          <th>ID</th>
+          <th>Tên Phim</th>
+          <th>Danh mục</th>
+          <th>Thời lượng</th>
+          <th>Năm</th>
+          <th>Quốc gia</th>
+          <th>Thao tác</th>
+        </tr>
+      </thead>
+      <tbody>
+        {movies.length === 0 ? (
+          <tr>
+            <td colSpan="8" className="text-center">
+              <Alert variant="info" className="mb-0">
+                Không có phim nào để hiển thị
+              </Alert>
+            </td>
+          </tr>
+        ) : (
+          movies.map((movie) => (
+            <tr key={movie.id}>
+              <td>
+                <Image 
+                  src={movie.poster} 
+                  alt={movie.movieName} 
+                  style={{ width: '50px', height: '70px', objectFit: 'cover' }} 
+                  rounded 
+                />
+              </td>
+              <td>#{movie.id}</td>
+              <td>
+                <strong>{movie.movieName}</strong>
+                <br />
+                <small className="text-muted">
+                  {movie.description?.substring(0, 50)}...
+                </small>
+              </td>
+              <td>
+                <Badge bg={getCategoryBadgeVariant(getGenreName(movie.genreId))}>
+                  {getGenreName(movie.genreId)}
+                </Badge>
+              </td>
+              <td>{movie.duration} phút</td>
+              <td>{movie.year}</td>
+              <td>{movie.country}</td>
+              <td>
+                <ButtonGroup size="sm">
+                  <Button 
+                    variant="outline-primary" 
+                    onClick={() => onEdit(movie)}
+                    disabled={user?.role === 'user'}
+                  >
+                    Sửa
+                  </Button>
+                  <Button 
+                    variant="outline-danger" 
+                    onClick={() => onDelete(movie.id)}
+                    disabled={user?.role === 'user'}
+                  >
+                    Xóa
+                  </Button>
+                </ButtonGroup>
+              </td>
             </tr>
-          </thead>
-          <tbody>
-            {movies.length === 0 ? (
-              <tr>
-                <td colSpan="8" className="text-center">
-                  <Alert variant="info" className="mb-0">
-                    Không có phim nào để hiển thị
-                  </Alert>
-                </td>
-              </tr>
-            ) : (
-              movies.map((movie) => {
-                const genreName = genreMap[movie.genreId] || 'Unknown';
-                return (
-                  <tr key={movie.id}>
-                    <td>
-                      <Image 
-                        src={movie.avatar} 
-                        alt={movie.title} 
-                        style={{ width: '50px', height: '50px', objectFit: 'cover' }} 
-                        rounded 
-                      />
-                    </td>
-                    <td>#{movie.id}</td>
-                    <td>
-                      <strong>{movie.title}</strong>
-                      <br />
-                      <small className="text-muted">
-                        {movie.description?.substring(0, 50)}...
-                      </small>
-                    </td>
-                    <td>
-                      <Badge bg={getCategoryBadgeVariant(genreName)}>
-                        {genreName}
-                      </Badge>
-                    </td>
-                    <td>{movie.duration} phút</td>
-                    <td>{movie.year}</td>
-                    <td>{movie.country}</td>
-                    <td>
-                      {canEdit && (
-                        <Button 
-                          variant="primary" 
-                          size="sm" 
-                          onClick={() => handleEditClick(movie)} 
-                          className="me-2"
-                        >
-                          Sửa
-                        </Button>
-                      )}
-                      {canDelete && (
-                        <Button 
-                          variant="danger" 
-                          size="sm" 
-                          onClick={() => handleDeleteClick(movie)}
-                        >
-                          Xóa
-                        </Button>
-                      )}
-                      {!canEdit && !canDelete && (
-                        <Badge variant="secondary">Chỉ xem</Badge>
-                      )}
-                    </td>
-                  </tr>
-                );
-              })
-            )}
-          </tbody>
-        </Table>
-      )}
-
-      {/* MODAL XÁC NHẬN XÓA */}
-      <Modal show={showDeleteModal} onHide={() => dispatch({ type: 'CLOSE_DELETE_MODAL' })}>
-        <Modal.Header closeButton>
-          <Modal.Title>Xác nhận Xóa Phim</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Alert variant="warning">
-            <strong>Cảnh báo!</strong> Bạn có chắc chắn muốn xóa phim{' '}
-            <strong>"{movieToDelete?.title}"</strong> (ID: {movieToDelete?.id}) không?
-            <br />
-            <small>Hành động này không thể hoàn tác!</small>
-          </Alert>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => dispatch({ type: 'CLOSE_DELETE_MODAL' })}>
-            Hủy bỏ
-          </Button>
-          <Button variant="danger" onClick={() => confirmDelete(movieToDelete.id)}>
-            <i className="bi bi-trash me-2"></i>
-            Xác nhận Xóa
-          </Button>
-        </Modal.Footer>
-      </Modal>
-    </>
+          ))
+        )}
+      </tbody>
+    </Table>
   );
 };
 

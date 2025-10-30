@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useReducer, useEffect } from 'react';
-import api from '../api/api';
+import movieApi from '../api/movieAPI';
 
 // Tạo AuthContext
 const AuthContext = createContext();
@@ -83,7 +83,7 @@ export function AuthProvider({ children }) {
 
     try {
       // Gọi API để lấy danh sách accounts
-      const response = await api.get('/accounts');
+      const response = await movieApi.get('/accounts');
       const accounts = response.data;
 
       // Tìm user trong dữ liệu từ API

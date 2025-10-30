@@ -1,6 +1,6 @@
 import React from 'react';
 import { Container, Alert } from 'react-bootstrap';
-import { MovieProvider } from '../contexts/MovieContext';
+import { MovieProvider, useMovieState, useMovieDispatch } from '../contexts/MovieContext';
 import { useAuth } from '../contexts/AuthContext';
 import Header from '../components/Header';
 import MovieForm from '../components/MovieForm';
@@ -9,6 +9,20 @@ import MovieTable from '../components/MovieTable';
 // Component con hiển thị nội dung, được bọc bởi MovieProvider
 const MovieManagerContent = () => {
     const { user } = useAuth();
+    const { 
+        movies, 
+        genres, 
+        loading
+    } = useMovieState();
+    const { dispatch } = useMovieDispatch();
+
+    const handleEditMovie = (movie) => {
+        dispatch({ type: 'EDIT_MOVIE', payload: movie });
+    };
+
+    const handleDeleteMovie = (movieId) => {
+        dispatch({ type: 'OPEN_DELETE_MODAL', payload: { id: movieId } });
+    };
 
     return (
         <>
@@ -34,7 +48,13 @@ const MovieManagerContent = () => {
                     </small>
                 </div>
                 
-                <MovieTable /> 
+                <MovieTable 
+                    movies={movies}
+                    genres={genres}
+                    loading={loading}
+                    onEdit={handleEditMovie}
+                    onDelete={handleDeleteMovie}
+                /> 
             </Container>
         </>
     );

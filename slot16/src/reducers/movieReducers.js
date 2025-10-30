@@ -4,7 +4,7 @@ export const initialMovieState = {
   genres: [],
   loading: false, 
   isEditing: null, 
-  currentMovie: { avatar: '', title: '', description: '', genreId: '', duration: '', year: '', country: '' },
+  currentMovie: { poster: '', movieName: '', description: '', genreId: '', duration: '', year: '', country: '' },
   showEditModal: false,   
   showDeleteModal: false, 
   movieToDelete: null     
@@ -29,6 +29,15 @@ export const movieReducer = (state, action) => {
 
     case 'OPEN_EDIT_MODAL':
       // Gán dữ liệu phim vào currentMovie để điền vào form sửa
+      return { 
+        ...state, 
+        currentMovie: action.payload, 
+        isEditing: action.payload.id,
+        showEditModal: true 
+      };
+
+    case 'EDIT_MOVIE':
+      // Alias cho OPEN_EDIT_MODAL
       return { 
         ...state, 
         currentMovie: action.payload, 

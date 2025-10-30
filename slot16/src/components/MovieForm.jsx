@@ -9,25 +9,25 @@ const MovieFields = ({ currentMovie, handleInputChange, handleFileChange, imageP
     <>
         <Row className="mb-3">
             <Col md={6}>
-                <Form.Group controlId="formAvatar">
-                    <Form.Label>Ảnh Avatar Phim</Form.Label>
+                <Form.Group controlId="formPoster">
+                    <Form.Label>Ảnh Poster Phim</Form.Label>
                     <Form.Control 
                         type="file" 
-                        name="avatarFile" 
+                        name="posterFile" 
                         accept="image/*"
                         onChange={handleFileChange}
                         className="mb-2"
                     />
                     <Form.Control 
                         type="text" 
-                        name="avatar" 
-                        value={currentMovie.avatar || ''} 
+                        name="poster" 
+                        value={currentMovie.poster || ''} 
                         onChange={handleInputChange} 
                         placeholder="Hoặc nhập URL hình ảnh"
-                        isInvalid={validated && errors.avatar}
+                        isInvalid={validated && errors.poster}
                     />
                     <Form.Control.Feedback type="invalid">
-                        {errors.avatar}
+                        {errors.poster}
                     </Form.Control.Feedback>
                     {imagePreview && (
                         <div className="mt-2">
@@ -188,7 +188,7 @@ const MovieForm = () => {
       reader.onload = (event) => {
         const imageUrl = event.target.result;
         setImagePreview(imageUrl);
-        dispatch({ type: 'UPDATE_FIELD', payload: { name: 'avatar', value: imageUrl } });
+        dispatch({ type: 'UPDATE_FIELD', payload: { name: 'poster', value: imageUrl } });
       };
       reader.readAsDataURL(file);
     }
@@ -236,8 +236,8 @@ const MovieForm = () => {
       newErrors.country = 'Quốc gia không được để trống';
     }
     
-    if (!currentMovie.avatar?.trim()) {
-      newErrors.avatar = 'Vui lòng chọn ảnh hoặc nhập URL';
+    if (!currentMovie.poster?.trim()) {
+      newErrors.poster = 'Vui lòng chọn ảnh hoặc nhập URL';
     }
     
     setErrors(newErrors);
@@ -284,7 +284,7 @@ const MovieForm = () => {
     currentMovie: isCreating ? currentMovie : initialMovieState.currentMovie, 
     handleInputChange: isCreating ? handleInputChange : () => {},
     handleFileChange: isCreating ? handleFileChange : () => {},
-    imagePreview: isCreating ? imagePreview : currentMovie.avatar,
+    imagePreview: isCreating ? imagePreview : currentMovie.poster,
     genres: genres,
     errors: isCreating ? errors : {},
     validated: isCreating ? validated : false
@@ -316,7 +316,7 @@ const MovieForm = () => {
                     currentMovie={currentMovie} 
                     handleInputChange={handleInputChange}
                     handleFileChange={handleFileChange}
-                    imagePreview={currentMovie.avatar}
+                    imagePreview={currentMovie.poster}
                     genres={genres}
                     errors={errors}
                     validated={validated}

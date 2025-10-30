@@ -1,7 +1,7 @@
 // src/contexts/MovieContext.jsx
 import React, { createContext, useReducer, useContext, useEffect, useCallback } from 'react';
 import { movieReducer, initialMovieState } from '../reducers/movieReducers';
-import api from '../api/api';
+import movieApi from '../api/movieAPI';
 
 // Contexts
 export const MovieStateContext = createContext(initialMovieState); 
@@ -19,7 +19,7 @@ export const MovieProvider = ({ children }) => {
   const fetchMovies = useCallback(async () => {
     dispatch({ type: 'START_LOADING' });
     try {
-      const response = await api.get('/movies');
+      const response = await movieApi.get('/movies');
       dispatch({ type: 'SET_MOVIES', payload: response.data });
     } catch (error) {
       console.error("Lỗi khi tải danh sách phim:", error);
@@ -30,7 +30,7 @@ export const MovieProvider = ({ children }) => {
   // Hàm fetch genres từ API
   const fetchGenres = useCallback(async () => {
     try {
-      const response = await api.get('/genres');
+      const response = await movieApi.get('/genres');
       dispatch({ type: 'SET_GENRES', payload: response.data });
     } catch (error) {
       console.error("Lỗi khi tải danh sách thể loại:", error);
@@ -44,7 +44,7 @@ export const MovieProvider = ({ children }) => {
     dispatch({ type: 'START_LOADING' });
 
     try {
-      await api.delete(`/movies/${id}`);
+      await movieApi.delete(`/movies/${id}`);
       fetchMovies(); // Tải lại dữ liệu
     } catch (error) {
       console.error("Lỗi khi xóa phim:", error);
@@ -59,10 +59,10 @@ export const MovieProvider = ({ children }) => {
     try {
       if (isEditing) {
         // UPDATE (PUT)
-        await api.put(`/movies/${isEditingId}`, dataToSend);
+        await movieApi.put(`/movies/${isEditingId}`, dataToSend);
       } else {
         // CREATE (POST)
-        await api.post('/movies', dataToSend);
+        await movieApi.post('/movies', dataToSend);
       }
       
       dispatch({ type: 'RESET_FORM' }); 
