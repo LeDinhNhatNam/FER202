@@ -2,14 +2,13 @@ import React from 'react';
 import './App.css';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import LoginForm from './components/LoginForm';
+import WelcomeMessage from './components/WelcomeMessage';
 import MovieManager from './pages/MovieManager';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-// Component để kiểm tra authentication và render UI tương ứng
 const AppContent = () => {
-  const { isAuthenticated, loading } = useAuth();
+  const { isAuthenticated, loading, showWelcome, hideWelcome } = useAuth();
 
-  // Hiển thị loading nếu đang kiểm tra session
   if (loading) {
     return (
       <div className="d-flex justify-content-center align-items-center min-vh-100">
@@ -20,12 +19,14 @@ const AppContent = () => {
     );
   }
 
-  // Nếu chưa đăng nhập, hiển thị LoginForm
   if (!isAuthenticated) {
     return <LoginForm />;
   }
 
-  // Nếu đã đăng nhập, hiển thị MovieManager
+  if (showWelcome) {
+    return <WelcomeMessage onContinue={hideWelcome} />;
+  }
+
   return <MovieManager />;
 };
 

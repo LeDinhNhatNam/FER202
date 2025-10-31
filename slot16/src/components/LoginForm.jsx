@@ -5,7 +5,7 @@ import { useAuth } from '../contexts/AuthContext';
 const LoginForm = () => {
   const { login, loading, error, clearError } = useAuth();
   const [formData, setFormData] = useState({
-    email: '',
+    loginField: '', // Có thể là email hoặc username
     password: ''
   });
   const [validated, setValidated] = useState(false);
@@ -16,7 +16,6 @@ const LoginForm = () => {
       ...prev,
       [name]: value
     }));
-    // Clear error when user starts typing
     if (error) {
       clearError();
     }
@@ -32,9 +31,8 @@ const LoginForm = () => {
       return;
     }
 
-    const result = await login(formData.email, formData.password);
+    const result = await login(formData.loginField, formData.password);
     if (result.success) {
-      // Đăng nhập thành công - redirect sẽ được xử lý bởi App component
       console.log('Đăng nhập thành công:', result.user);
     }
   };
@@ -56,19 +54,22 @@ const LoginForm = () => {
 
               <Form noValidate validated={validated} onSubmit={handleSubmit}>
                 <Form.Group className="mb-3">
-                  <Form.Label>Email <span className="text-danger">*</span></Form.Label>
+                  <Form.Label>Email hoặc Username <span className="text-danger">*</span></Form.Label>
                   <Form.Control
-                    type="email"
-                    name="email"
-                    value={formData.email}
+                    type="text"
+                    name="loginField"
+                    value={formData.loginField}
                     onChange={handleChange}
-                    placeholder="Nhập email"
+                    placeholder="Nhập email hoặc username"
                     required
                     disabled={loading}
                   />
                   <Form.Control.Feedback type="invalid">
-                    Vui lòng nhập email hợp lệ
+                    Vui lòng nhập email hoặc username
                   </Form.Control.Feedback>
+                  <Form.Text className="text-muted">
+                    Bạn có thể đăng nhập bằng email hoặc username
+                  </Form.Text>
                 </Form.Group>
 
                 <Form.Group className="mb-3">

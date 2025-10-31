@@ -4,7 +4,6 @@ import { useMovieState, useMovieDispatch } from '../contexts/MovieContext';
 import { useAuth } from '../contexts/AuthContext';
 import { initialMovieState } from '../reducers/movieReducers';
 
-// Component con tái sử dụng cho các trường input
 const MovieFields = ({ currentMovie, handleInputChange, handleFileChange, imagePreview, genres, errors = {}, validated = false }) => (
     <>
         <Row className="mb-3">
@@ -90,7 +89,7 @@ const MovieFields = ({ currentMovie, handleInputChange, handleFileChange, imageP
                     >
                         <option value="">Chọn thể loại</option>
                         {genres.map((genre) => (
-                            <option key={genre.id} value={genre.id}>{genre.name}</option>
+                            <option key={genre.id} value={parseInt(genre.id)}>{genre.name}</option>
                         ))}
                     </Form.Select>
                     <Form.Control.Feedback type="invalid">
@@ -169,7 +168,6 @@ const MovieForm = () => {
   const [validated, setValidated] = useState(false);
   const [errors, setErrors] = useState({});
 
-  // Chỉ admin và manager mới được thêm/sửa phim
   const canEdit = user?.role === 'admin' || user?.role === 'manager';
 
   const handleInputChange = (e) => {
@@ -274,7 +272,6 @@ const MovieForm = () => {
     }
   };
 
-  // Chỉ hiển thị form nếu user có quyền
   if (!canEdit) {
     return null;
   }
@@ -292,7 +289,6 @@ const MovieForm = () => {
 
   return (
     <>
-      {/* FORM THÊM MỚI (Chỉ hiện với admin/manager) */}
       <Container className="p-3 mb-4 border">
         <h3 className="mb-3">📽️ Thêm Phim Mới</h3>
         <Form noValidate validated={validated} onSubmit={handleSubmit}>
@@ -304,8 +300,7 @@ const MovieForm = () => {
             </div>
         </Form>
       </Container>
-      
-      {/* MODAL CHỈNH SỬA */}
+
       <Modal show={showEditModal} onHide={handleCloseEditModal} size="lg">
         <Modal.Header closeButton>
             <Modal.Title>Chỉnh sửa Phim ID: {isEditing}</Modal.Title>

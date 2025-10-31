@@ -2,22 +2,23 @@ import React from 'react';
 import { Table, Button, Image, Badge, Alert, Spinner, ButtonGroup } from 'react-bootstrap';
 import { useAuth } from '../contexts/AuthContext';
 
-const MovieTable = ({ movies, genres, loading, onEdit, onDelete }) => {
+const MovieTable = ({ movies, genres, loading, onEdit, onDelete, onViewDetail }) => {
   const { user } = useAuth();
 
   const getGenreName = (genreId) => {
-    const genre = genres.find(g => g.id === genreId);
-    return genre ? genre.genreName : 'Không xác định';
+    // Chuyển đổi cả hai về cùng kiểu dữ liệu để so sánh
+    const genre = genres.find(g => parseInt(g.id) === parseInt(genreId));
+    return genre ? genre.name : 'Không xác định';
   };
 
   const getCategoryBadgeVariant = (genreName) => {
     const variants = {
-      'Action': 'danger',
+      'Sci-Fi': 'primary',
       'Comedy': 'warning', 
       'Drama': 'info',
       'Horror': 'dark',
-      'Romance': 'success',
-      'Sci-Fi': 'primary',
+      'Romance': 'danger',
+      'Action': 'success',
       'Thriller': 'secondary'
     };
     return variants[genreName] || 'secondary';
@@ -61,14 +62,14 @@ const MovieTable = ({ movies, genres, loading, onEdit, onDelete }) => {
               <td>
                 <Image 
                   src={movie.poster} 
-                  alt={movie.movieName} 
+                  alt={movie.title} 
                   style={{ width: '50px', height: '70px', objectFit: 'cover' }} 
                   rounded 
                 />
               </td>
               <td>#{movie.id}</td>
               <td>
-                <strong>{movie.movieName}</strong>
+                <strong>{movie.title}</strong>
                 <br />
                 <small className="text-muted">
                   {movie.description?.substring(0, 50)}...
@@ -85,6 +86,13 @@ const MovieTable = ({ movies, genres, loading, onEdit, onDelete }) => {
               <td>
                 <ButtonGroup size="sm">
                   <Button 
+                    variant="outline-info" 
+                    onClick={() => onViewDetail(movie)}
+                    title="Xem chi tiết phim"
+                  >
+                    Chi tiết
+                  </Button>
+                  <Button 
                     variant="outline-primary" 
                     onClick={() => onEdit(movie)}
                     disabled={user?.role === 'user'}
@@ -94,7 +102,8 @@ const MovieTable = ({ movies, genres, loading, onEdit, onDelete }) => {
                   <Button 
                     variant="outline-danger" 
                     onClick={() => onDelete(movie.id)}
-                    disabled={user?.role === 'user'}
+                    disabled={user?.role !== 'admin'}
+                    title={user?.role !== 'admin' ? 'Chỉ admin mới có quyền xóa phim' : 'Xóa phim'}
                   >
                     Xóa
                   </Button>

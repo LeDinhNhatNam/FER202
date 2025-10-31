@@ -1,18 +1,16 @@
 import React, { createContext, useContext, useReducer, useEffect } from 'react';
 import movieApi from '../api/movieAPI';
 
-// Tạo AuthContext
 const AuthContext = createContext();
 
-// Initial state cho useReducer
 const initialState = {
   user: null,
   isAuthenticated: false,
   loading: false,
-  error: null
+  error: null,
+  showWelcome: false
 };
 
-// Auth reducer để quản lý trạng thái authentication
 function authReducer(state, action) {
   switch (action.type) {
     case 'LOGIN_START':
@@ -27,7 +25,8 @@ function authReducer(state, action) {
         loading: false,
         isAuthenticated: true,
         user: action.payload,
-        error: null
+        error: null,
+        showWelcome: true
       };
     case 'LOGIN_FAILURE':
       return {
@@ -42,29 +41,34 @@ function authReducer(state, action) {
         ...state,
         isAuthenticated: false,
         user: null,
-        error: null
+        error: null,
+        showWelcome: false
       };
     case 'CLEAR_ERROR':
       return {
         ...state,
         error: null
       };
+    case 'HIDE_WELCOME':
+      return {
+        ...state,
+        showWelcome: false
+      };
     case 'RESTORE_SESSION':
       return {
         ...state,
         isAuthenticated: true,
-        user: action.payload
+        user: action.payload,
+        showWelcome: false
       };
     default:
       return state;
   }
 }
 
-// AuthProvider component
 export function AuthProvider({ children }) {
   const [state, dispatch] = useReducer(authReducer, initialState);
 
-  // Khôi phục session từ localStorage khi app khởi động
   useEffect(() => {
     const savedUser = localStorage.getItem('user');
     if (savedUser) {
@@ -77,29 +81,27 @@ export function AuthProvider({ children }) {
     }
   }, []);
 
-  // Login function - gọi API để xác thực
-  const login = async (email, password) => {
+  const login = async (loginField, password) => {
     dispatch({ type: 'LOGIN_START' });
 
     try {
-      // Gọi API để lấy danh sách accounts
       const response = await movieApi.get('/accounts');
       const accounts = response.data;
 
-      // Tìm user trong dữ liệu từ API
+      // Tìm user bằng email hoặc username
       const user = accounts.find(
-        account => account.email === email && account.password === password
+        account => (account.email === loginField || account.username === loginField) && 
+                   account.password === password
       );
 
       if (!user) {
-        throw new Error('Email hoặc mật khẩu không đúng!');
+        throw new Error('Email/Username hoặc mật khẩu không đúng!');
       }
 
       if (user.status === 'locked') {
         throw new Error('Tài khoản đã bị khóa!');
       }
 
-      // Đăng nhập thành công - lưu user info vào localStorage
       localStorage.setItem('user', JSON.stringify(user));
       
       dispatch({ 
@@ -121,23 +123,25 @@ export function AuthProvider({ children }) {
     }
   };
 
-  // Logout function
   const logout = () => {
     localStorage.removeItem('user');
     dispatch({ type: 'LOGOUT' });
   };
 
-  // Clear error function
   const clearError = () => {
     dispatch({ type: 'CLEAR_ERROR' });
   };
 
-  // Context value
+  const hideWelcome = () => {
+    dispatch({ type: 'HIDE_WELCOME' });
+  };
+
   const value = {
     ...state,
     login,
     logout,
-    clearError
+    clearError,
+    hideWelcome
   };
 
   return (
@@ -147,7 +151,6 @@ export function AuthProvider({ children }) {
   );
 }
 
-// Custom hook để sử dụng AuthContext
 export function useAuth() {
   const context = useContext(AuthContext);
   if (!context) {
