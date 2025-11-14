@@ -1,0 +1,58 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "username": "john_doe",
+      "password": "password123",
+      "fullName": "John Doe"
+    },
+    {
+      "id": 2,
+      "username": "jane_smith",
+      "password": "securepass",
+      "fullName": "Jane Smith"
+    }
+  ],
+  "expenses": [
+    {
+      "id": 1,
+      "userId": 1,
+      "name": "Groceries",
+      "amount": 500000,
+      "category": "Food",
+      "date": "2025-01-15"
+    },
+    {
+      "id": 2,
+      "userId": 1,
+      "name": "Electricity Bill",
+      "amount": 800000,
+      "category": "Utilities",
+      "date": "2025-01-10"
+    },
+    {
+      "id": 3,
+      "userId": 1,
+      "name": "Internet",
+      "amount": 300000,
+      "category": "Utilities",
+      "date": "2025-01-05"
+    },
+    {
+      "id": 4,
+      "userId": 1,
+      "name": "Coffee",
+      "amount": 120000,
+      "category": "Food",
+      "date": "2025-01-20"
+    },
+    {
+      "id": 5,
+      "userId": 2,
+      "name": "Rent",
+      "amount": 5000000,
+      "category": "Housing",
+      "date": "2025-01-01"
+    }
+  ]
+}
