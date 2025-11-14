@@ -1,0 +1,8 @@
+{
+  "short_name": "Lab6 RTK",
+  "name": "Lab 6 Redux Toolkit",
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}
